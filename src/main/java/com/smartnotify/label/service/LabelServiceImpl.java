@@ -1,5 +1,6 @@
 package com.smartnotify.label.service;
 
+import com.smartnotify.condominium.model.Condominium;
 import com.smartnotify.condominium.model.CondominiumType;
 import com.smartnotify.label.factory.ResidenceDataNormalizerFactory;
 import com.smartnotify.label.factory.ResidencePatternMatcherFactory;
@@ -15,9 +16,7 @@ public class LabelServiceImpl implements LabelService {
     private final ResidenceDataNormalizerFactory dataNormalizer;
 
     public String matchResidencePatternAndNormalize(final String labelContent) {
-        //final var condominiumType = Condominium.getAuthenticatedCondominium().getCondominiumType();
-        // Mocking until spring security is on. TODO: remove this mock
-        final var condominiumType = CondominiumType.VERTICAL;
+        final var condominiumType = Condominium.getAuthenticatedCondominium().getType();
 
         final String residenceDetails = matchResidenceDetails(labelContent, condominiumType);
         return normalizeResidenceDetails(residenceDetails, condominiumType);
