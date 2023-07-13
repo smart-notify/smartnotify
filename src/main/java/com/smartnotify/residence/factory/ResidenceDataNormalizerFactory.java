@@ -1,7 +1,7 @@
-package com.smartnotify.label.factory;
+package com.smartnotify.residence.factory;
 
 import com.smartnotify.condominium.model.CondominiumType;
-import com.smartnotify.label.normalizer.ResidenceDataNormalizer;
+import com.smartnotify.residence.normalizer.ResidenceDataNormalizer;
 
 public interface ResidenceDataNormalizerFactory {
 

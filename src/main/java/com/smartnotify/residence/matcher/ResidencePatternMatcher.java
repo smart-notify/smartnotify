@@ -1,4 +1,4 @@
-package com.smartnotify.label.matcher;
+package com.smartnotify.residence.matcher;
 
 import com.smartnotify.condominium.model.CondominiumType;
 

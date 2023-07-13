@@ -1,4 +1,4 @@
-package com.smartnotify.label.normalizer;
+package com.smartnotify.residence.normalizer;
 
 import com.smartnotify.condominium.model.CondominiumType;
 import org.springframework.stereotype.Service;

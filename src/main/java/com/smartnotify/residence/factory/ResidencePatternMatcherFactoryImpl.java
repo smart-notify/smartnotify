@@ -1,7 +1,7 @@
-package com.smartnotify.label.factory;
+package com.smartnotify.residence.factory;
 
 import com.smartnotify.condominium.model.CondominiumType;
-import com.smartnotify.label.matcher.ResidencePatternMatcher;
+import com.smartnotify.residence.matcher.ResidencePatternMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

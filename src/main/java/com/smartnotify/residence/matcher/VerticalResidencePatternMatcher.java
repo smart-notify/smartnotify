@@ -1,4 +1,4 @@
-package com.smartnotify.label.matcher;
+package com.smartnotify.residence.matcher;
 
 import com.smartnotify.condominium.model.CondominiumType;
 import com.smartnotify.config.exception.ResidenceDetailsNotFoundException;
@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.smartnotify.residence.constants.ResidenceConstants.APARTMENT_PATTERN;
+import static com.smartnotify.residence.constants.ResidenceConstants.BLOCK_PATTERN;
+
 @Service
 public class VerticalResidencePatternMatcher implements ResidencePatternMatcher {
-
-    private static final String APARTMENT_PATTERN = "(?i)ap([.]?|(to[.]?|artamento))?\\s*\\d+";
-    private static final String BLOCK_PATTERN = "(?i)((bloco)|(blco)[.]?|(blc)[.]?|(bl)[.]?)\\s*([0-9]{1,3}| [a-z])";
 
     @Override
     public String matchResidencePattern(final String labelContent) {
