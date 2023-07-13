@@ -2,8 +2,8 @@ package com.smartnotify.label.service;
 
 import com.smartnotify.condominium.model.Condominium;
 import com.smartnotify.condominium.model.CondominiumType;
-import com.smartnotify.label.factory.ResidenceDataNormalizerFactory;
-import com.smartnotify.label.factory.ResidencePatternMatcherFactory;
+import com.smartnotify.residence.factory.ResidenceDataNormalizerFactory;
+import com.smartnotify.residence.factory.ResidencePatternMatcherFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
