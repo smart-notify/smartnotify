@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface HouseResidentRepository extends ResidentBaseRepository<HorizontalCondoResident>,
+public interface HorizontalCondoResidentRepository extends ResidentBaseRepository<HorizontalCondoResident>,
         JpaRepository<HorizontalCondoResident, String> {
 
     Optional<HorizontalCondoResident> findByHouseNumberAndCondominiumId(String houseNumber, String condominiumId);

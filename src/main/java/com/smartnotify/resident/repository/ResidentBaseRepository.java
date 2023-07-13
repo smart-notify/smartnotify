@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ResidentBaseRepository<T extends Resident> extends Repository<T, String> {
     Optional<Resident> findByEmail(String email);
 
+    void deleteByEmailAndCondominiumId(String email, String condominiumId);
+
 }
