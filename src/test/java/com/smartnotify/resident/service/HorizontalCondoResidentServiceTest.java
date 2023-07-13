@@ -2,10 +2,13 @@ package com.smartnotify.resident.service;
 
 import com.smartnotify.condominium.model.Condominium;
 import com.smartnotify.condominium.model.CondominiumType;
+import com.smartnotify.config.exception.ResidentNotFoundException;
 import com.smartnotify.residence.factory.ResidenceDataNormalizerFactory;
 import com.smartnotify.residence.normalizer.HorizontalResidenceDataNormalizer;
 import com.smartnotify.resident.api.json.RegisterHorizontalCondoResidentRequest;
 import com.smartnotify.resident.model.HorizontalCondoResident;
+import com.smartnotify.resident.model.Resident;
+import com.smartnotify.resident.repository.HorizontalCondoResidentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,6 +32,9 @@ class HorizontalCondoResidentServiceTest {
 
     @Mock
     private HorizontalResidenceDataNormalizer horizontalResidenceDataNormalizer;
+
+    @Mock
+    private HorizontalCondoResidentRepository repository;
 
     @Mock
     private Authentication authentication;
@@ -64,4 +73,40 @@ class HorizontalCondoResidentServiceTest {
         assertEquals("resident@email.com", result.getEmail());
         assertEquals("CASA 32", result.getHouseNumber());
     }
+
+    @Test
+    void testFindResidentByResidenceDetails() {
+        final String residenceDetails = "CASA 1";
+        final String condominiumId = "condominiumId";
+
+        final var resident = new HorizontalCondoResident();
+        when(repository.findByHouseNumberAndCondominiumId(
+                "CASA 1", condominiumId))
+                .thenReturn(Optional.of(resident));
+
+        final Resident retrievedResident = residentService
+                .findResidentByResidenceDetails(residenceDetails, condominiumId);
+
+        assertEquals(resident, retrievedResident);
+    }
+
+    @Test
+    void testFindResidentByResidenceDetailsWithUnknownResidence() {
+        String residenceDetails = "Unknown House";
+        String condominiumId = "condominiumId";
+        when(repository
+                .findByHouseNumberAndCondominiumId(
+                        "Unknown House", condominiumId))
+                .thenReturn(Optional.empty());
+
+        assertThrows(ResidentNotFoundException.class,
+                () -> residentService.findResidentByResidenceDetails(residenceDetails, condominiumId));
+    }
+
+    @Test
+    void testGetCondominiumType() {
+        final var condominiumType = residentService.getCondominiumType();
+        assertEquals(CondominiumType.HORIZONTAL, condominiumType);
+    }
+
 }
