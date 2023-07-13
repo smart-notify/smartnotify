@@ -17,7 +17,13 @@ public class ExceptionHandlerConfig {
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(CondominiumAlreadyExistsException.class)
-    public Map<String, String> handleReceptionAlreadyExistsException(final CondominiumAlreadyExistsException e) {
+    public Map<String, String> handleCondominiumAlreadyExistsException(final CondominiumAlreadyExistsException e) {
+        return Collections.singletonMap("error", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ResidentAlreadyExistsException.class)
+    public Map<String, String> handleResidentAlreadyExistsException(final ResidentAlreadyExistsException e) {
         return Collections.singletonMap("error", e.getMessage());
     }
 
@@ -34,6 +40,12 @@ public class ExceptionHandlerConfig {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ResidenceDetailsNotFoundException.class)
     public Map<String, String> handleResidenceDetailsNotFoundException(final ResidenceDetailsNotFoundException e) {
+        return Collections.singletonMap("message", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ResidentNotFoundException.class)
+    public Map<String, String> handleResidentNotFoundException(final ResidentNotFoundException e) {
         return Collections.singletonMap("message", e.getMessage());
     }
 
