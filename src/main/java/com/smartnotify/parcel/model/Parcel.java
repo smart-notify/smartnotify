@@ -1,6 +1,7 @@
 package com.smartnotify.parcel.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.smartnotify.condominium.model.Condominium;
 import com.smartnotify.notification.model.Notification;
 import com.smartnotify.resident.model.Resident;
 import jakarta.persistence.CascadeType;
@@ -64,5 +65,9 @@ public class Parcel {
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "resident_id")
     private Resident resident;
+
+    @ManyToOne(cascade = CascadeType.MERGE, optional = false)
+    @JoinColumn(name = "condominium_id", nullable = false)
+    private Condominium condominium;
 
 }
