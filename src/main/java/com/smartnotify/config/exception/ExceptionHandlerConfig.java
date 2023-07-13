@@ -49,6 +49,12 @@ public class ExceptionHandlerConfig {
         return Collections.singletonMap("message", e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ParcelNotFoundException.class)
+    public Map<String, String> handleParcelNotFoundException(final ParcelNotFoundException e) {
+        return Collections.singletonMap("message", e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
     public Map<String, String> handleBadCredentialsException(final BadCredentialsException e) {
@@ -58,6 +64,12 @@ public class ExceptionHandlerConfig {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthenticationException.class)
     public Map<String, String> handleAuthenticationException(final AuthenticationException e) {
+        return Collections.singletonMap("message", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    @ExceptionHandler(SendParcelNotificationException.class)
+    public Map<String, String> handleSendParcelNotificationException(final SendParcelNotificationException e) {
         return Collections.singletonMap("message", e.getMessage());
     }
 
