@@ -55,6 +55,12 @@ public class ExceptionHandlerConfig {
         return Collections.singletonMap("message", e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalStateException.class)
+    public Map<String, String> handleIllegalStateExceptionException(final IllegalStateException e) {
+        return Collections.singletonMap("message", e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
     public Map<String, String> handleBadCredentialsException(final BadCredentialsException e) {
