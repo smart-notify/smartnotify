@@ -18,7 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -116,14 +116,14 @@ class VerticalCondoResidentServiceTest {
         final String condominiumId = "condominiumId";
 
         final var resident = new VerticalCondoResident();
-        when(repository.findByApartmentNumberAndBlockAndCondominiumId(
+        when(repository.findAllByApartmentNumberAndBlockAndCondominiumId(
                 "APTO 22", "BLOCO 1", condominiumId))
-                .thenReturn(Optional.of(resident));
+                .thenReturn(List.of(resident));
 
-        final Resident retrievedResident = residentService
-                .findResidentByResidenceDetails(residenceDetails, condominiumId);
+        final List<Resident> retrievedResidents = residentService
+                .findResidentsByResidenceDetails(residenceDetails, condominiumId);
 
-        assertEquals(resident, retrievedResident);
+        assertEquals(resident, retrievedResidents.get(0));
     }
 
     @Test
@@ -133,13 +133,13 @@ class VerticalCondoResidentServiceTest {
 
         final var resident = new VerticalCondoResident();
         when(repository
-                .findByApartmentNumberAndBlockAndCondominiumId("APTO 22", null, condominiumId))
-                .thenReturn(Optional.of(resident));
+                .findAllByApartmentNumberAndBlockAndCondominiumId("APTO 22", null, condominiumId))
+                .thenReturn(List.of(resident));
 
-        final Resident retrievedResident = residentService
-                .findResidentByResidenceDetails(residenceDetails, condominiumId);
+        final List<Resident> retrievedResidents = residentService
+                .findResidentsByResidenceDetails(residenceDetails, condominiumId);
 
-        assertEquals(resident, retrievedResident);
+        assertEquals(resident, retrievedResidents.get(0));
     }
 
     @Test
@@ -147,12 +147,12 @@ class VerticalCondoResidentServiceTest {
         String residenceDetails = "Unknown Apartment";
         String condominiumId = "condominiumId";
         when(repository
-                .findByApartmentNumberAndBlockAndCondominiumId(
+                .findAllByApartmentNumberAndBlockAndCondominiumId(
                         "Unknown Apartment", null, condominiumId))
-                .thenReturn(Optional.empty());
+                .thenReturn(List.of());
 
         assertThrows(ResidentNotFoundException.class,
-                () -> residentService.findResidentByResidenceDetails(residenceDetails, condominiumId));
+                () -> residentService.findResidentsByResidenceDetails(residenceDetails, condominiumId));
     }
 
     @Test

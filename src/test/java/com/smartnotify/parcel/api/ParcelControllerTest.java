@@ -56,7 +56,7 @@ class ParcelControllerTest {
 
         final var parcel = Parcel.builder()
                 .id("id")
-                .resident(resident)
+                .residenceDetails("residence details")
                 .status(DeliveryStatus.NOT_DELIVERED)
                 .registrationCode("5678")
                 .deliveryCode("1234")
@@ -64,7 +64,7 @@ class ParcelControllerTest {
 
         when(parcelService.getParcelsByStatus(DeliveryStatus.NOT_DELIVERED)).thenReturn(List.of(parcel));
 
-        mvc.perform(get(PARCEL_API_PATH + "?status=NOT_DELIVERED")
+        mvc.perform(get(PARCEL_API_PATH)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());

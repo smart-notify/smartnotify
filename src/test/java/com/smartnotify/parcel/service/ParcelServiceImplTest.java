@@ -9,8 +9,6 @@ import com.smartnotify.notification.repository.NotificationRepository;
 import com.smartnotify.parcel.model.DeliveryStatus;
 import com.smartnotify.parcel.model.Parcel;
 import com.smartnotify.parcel.repository.ParcelRepository;
-import com.smartnotify.resident.model.Resident;
-import com.smartnotify.resident.model.VerticalCondoResident;
 import com.smartnotify.resident.service.VerticalCondoResidentService;
 import com.smartnotify.resident.service.factory.ResidentServiceFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +77,7 @@ class ParcelServiceImplTest {
     }
 
     @Test
-    void getParcelsByStatus() {
+    void testGetNotDeliveredParcels() {
         final var status = DeliveryStatus.NOT_DELIVERED;
 
         final List<Parcel> expectedParcels = new ArrayList<>();
@@ -97,7 +95,6 @@ class ParcelServiceImplTest {
     void testSendParcelNotification() {
         final String labelContent = "Label Content";
         final String residenceDetails = "Residence Details";
-        final Resident resident = new VerticalCondoResident();
         final Parcel parcel = new Parcel();
 
         when(labelService.matchResidencePatternAndNormalize(labelContent)).thenReturn(residenceDetails);
@@ -109,13 +106,12 @@ class ParcelServiceImplTest {
 
         verify(labelService, times(1)).matchResidencePatternAndNormalize(labelContent);
         verify(residentServiceFactory, times(1)).findStrategy(any());
-        verify(mailService, times(1)).sendEmail(any(), any(), any());
         verify(parcelRepository, times(1)).save(any());
         verify(notificationRepository, times(1)).save(any());
     }
 
     @Test
-    void deliverParcel_ValidIdAndDeliveryCode_DeliversParcel() {
+    void testDeliverParcel() {
         final String id = "parcelId";
         final String deliveryCode = "1234";
         final Integer numberOfAffectedRows = 1;

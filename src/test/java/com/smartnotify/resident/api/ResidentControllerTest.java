@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartnotify.condominium.model.Condominium;
 import com.smartnotify.condominium.model.CondominiumType;
 import com.smartnotify.config.exception.ExceptionHandlerConfig;
+import com.smartnotify.parcel.repository.ParcelRepository;
 import com.smartnotify.resident.api.json.DeleteResidentRequest;
 import com.smartnotify.resident.api.json.RegisterHorizontalCondoResidentRequest;
 import com.smartnotify.resident.api.json.RegisterVerticalCondoResidentRequest;
@@ -67,6 +68,9 @@ class ResidentControllerTest {
 
     @Mock
     private DeleteResidentFactory deleteResidentFactory;
+
+    @Mock
+    private ParcelRepository parcelRepository;
 
     @Mock
     private VerticalCondoResidentRepository verticalCondoResidentRepository;
@@ -204,7 +208,7 @@ class ResidentControllerTest {
                 .thenReturn(Optional.of(VerticalCondoResident.builder().build()));
 
         when(deleteResidentFactory.findStrategy(CondominiumType.VERTICAL))
-                .thenReturn(new DeleteVerticalCondoResident(verticalCondoResidentRepository));
+                .thenReturn(new DeleteVerticalCondoResident(parcelRepository, verticalCondoResidentRepository));
 
         mvc.perform(delete(RESIDENT_API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -235,7 +239,7 @@ class ResidentControllerTest {
                 .thenReturn(Optional.of(HorizontalCondoResident.builder().build()));
 
         when(deleteResidentFactory.findStrategy(CondominiumType.HORIZONTAL))
-                .thenReturn(new DeleteHorizontalCondoResident(horizontalCondoResidentRepository));
+                .thenReturn(new DeleteHorizontalCondoResident(parcelRepository, horizontalCondoResidentRepository));
 
         mvc.perform(delete(RESIDENT_API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)

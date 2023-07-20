@@ -18,7 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -80,14 +80,14 @@ class HorizontalCondoResidentServiceTest {
         final String condominiumId = "condominiumId";
 
         final var resident = new HorizontalCondoResident();
-        when(repository.findByHouseNumberAndCondominiumId(
+        when(repository.findAllByHouseNumberAndCondominiumId(
                 "CASA 1", condominiumId))
-                .thenReturn(Optional.of(resident));
+                .thenReturn(List.of(resident));
 
-        final Resident retrievedResident = residentService
-                .findResidentByResidenceDetails(residenceDetails, condominiumId);
+        final List<Resident> retrievedResidents = residentService
+                .findResidentsByResidenceDetails(residenceDetails, condominiumId);
 
-        assertEquals(resident, retrievedResident);
+        assertEquals(resident, retrievedResidents.get(0));
     }
 
     @Test
@@ -95,12 +95,12 @@ class HorizontalCondoResidentServiceTest {
         String residenceDetails = "Unknown House";
         String condominiumId = "condominiumId";
         when(repository
-                .findByHouseNumberAndCondominiumId(
+                .findAllByHouseNumberAndCondominiumId(
                         "Unknown House", condominiumId))
-                .thenReturn(Optional.empty());
+                .thenReturn(List.of());
 
         assertThrows(ResidentNotFoundException.class,
-                () -> residentService.findResidentByResidenceDetails(residenceDetails, condominiumId));
+                () -> residentService.findResidentsByResidenceDetails(residenceDetails, condominiumId));
     }
 
     @Test
