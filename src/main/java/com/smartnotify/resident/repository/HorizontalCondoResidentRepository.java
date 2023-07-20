@@ -5,12 +5,15 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 @Transactional
 public interface HorizontalCondoResidentRepository extends ResidentBaseRepository<HorizontalCondoResident>,
         JpaRepository<HorizontalCondoResident, String> {
 
-    Optional<HorizontalCondoResident> findByHouseNumberAndCondominiumId(String houseNumber, String condominiumId);
+    List<HorizontalCondoResident> findAllByHouseNumberAndCondominiumId(String houseNumber,
+                                                                       String condominiumId);
+
+    Long countByHouseNumberAndCondominiumId(String houseNumber, String condominiumId);
 }

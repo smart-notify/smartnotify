@@ -3,9 +3,11 @@ package com.smartnotify.resident.service;
 import com.smartnotify.condominium.model.CondominiumType;
 import com.smartnotify.resident.model.Resident;
 
+import java.util.List;
+
 public interface ResidentService {
 
-    Resident findResidentByResidenceDetails(String residenceDetails, String receptionId);
+    List<Resident> findResidentsByResidenceDetails(String residenceDetails, String receptionId);
 
     CondominiumType getCondominiumType();
 

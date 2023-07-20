@@ -12,6 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class VerticalCondoResidentService implements ResidentService {
@@ -38,12 +41,12 @@ public class VerticalCondoResidentService implements ResidentService {
     }
 
     @Override
-    public Resident findResidentByResidenceDetails(final String residenceDetails, final String condominiumId) {
+    public List<Resident> findResidentsByResidenceDetails(final String residenceDetails, final String condominiumId) {
         if (isBlockPresent(residenceDetails)) {
             final var residenceParts = splitApartmentNumberAndBlock(residenceDetails);
-            return findApartmentResidentWithBlock(condominiumId, residenceParts);
+            return new ArrayList<>(findApartmentResidentWithBlock(condominiumId, residenceParts));
         }
-        return findApartmentResidentWithoutBlock(residenceDetails, condominiumId);
+        return new ArrayList<>(findApartmentResidentWithoutBlock(residenceDetails, condominiumId));
     }
 
     @Override
@@ -51,20 +54,28 @@ public class VerticalCondoResidentService implements ResidentService {
         return CondominiumType.VERTICAL;
     }
 
-    private VerticalCondoResident findApartmentResidentWithBlock(final String condominiumId,
-                                                                 final ApartmentBlockDetails parts) {
-        return repository.findByApartmentNumberAndBlockAndCondominiumId(
-                        parts.getApartmentNumber(),
-                        parts.getBlock(),
-                        condominiumId)
-                .orElseThrow(() -> new ResidentNotFoundException("Resident not found."));
+    private List<VerticalCondoResident> findApartmentResidentWithBlock(final String condominiumId,
+                                                                       final ApartmentBlockDetails parts) {
+        final var residents = repository.findAllByApartmentNumberAndBlockAndCondominiumId(
+                parts.getApartmentNumber(),
+                parts.getBlock(),
+                condominiumId);
+
+        if (residents.isEmpty()) {
+            throw new ResidentNotFoundException("No residents found for the specified residence.");
+        }
+        return residents;
     }
 
-    private VerticalCondoResident findApartmentResidentWithoutBlock(final String residenceDetails,
-                                                                    final String condominiumId) {
-        return repository
-                .findByApartmentNumberAndBlockAndCondominiumId(residenceDetails, null, condominiumId)
-                .orElseThrow(() -> new ResidentNotFoundException("Resident not found."));
+    private List<VerticalCondoResident> findApartmentResidentWithoutBlock(final String residenceDetails,
+                                                                          final String condominiumId) {
+        final var residents = repository
+                .findAllByApartmentNumberAndBlockAndCondominiumId(residenceDetails, null, condominiumId);
+
+        if (residents.isEmpty()) {
+            throw new ResidentNotFoundException("No residents found for the specified residence.");
+        }
+        return residents;
     }
 
     private boolean isBlockPresent(final String residenceDetails) {

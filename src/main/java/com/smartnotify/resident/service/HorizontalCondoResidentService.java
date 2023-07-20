@@ -11,6 +11,9 @@ import com.smartnotify.resident.repository.HorizontalCondoResidentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class HorizontalCondoResidentService implements ResidentService {
@@ -34,9 +37,13 @@ public class HorizontalCondoResidentService implements ResidentService {
     }
 
     @Override
-    public Resident findResidentByResidenceDetails(String residenceDetails, final String condominiumId) {
-        return repository.findByHouseNumberAndCondominiumId(residenceDetails, condominiumId)
-                .orElseThrow(() -> new ResidentNotFoundException("Resident not found."));
+    public List<Resident> findResidentsByResidenceDetails(String residenceDetails, final String condominiumId) {
+        final var residents = repository.findAllByHouseNumberAndCondominiumId(residenceDetails, condominiumId);
+
+        if (residents.isEmpty()) {
+            throw new ResidentNotFoundException("No residents found for the specified residence.");
+        }
+        return new ArrayList<>(residents);
     }
 
     @Override
