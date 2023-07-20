@@ -79,4 +79,10 @@ public class ExceptionHandlerConfig {
         return Collections.singletonMap("message", e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(RuntimeException.class)
+    public Map<String, String> handleRuntimeException(final RuntimeException e) {
+        return Collections.singletonMap("message", e.getMessage());
+    }
+
 }
