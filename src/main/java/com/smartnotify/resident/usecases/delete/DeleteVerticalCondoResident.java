@@ -3,35 +3,68 @@ package com.smartnotify.resident.usecases.delete;
 import com.smartnotify.condominium.model.CondominiumType;
 import com.smartnotify.config.exception.ResidentNotFoundException;
 import com.smartnotify.parcel.model.DeliveryStatus;
+import com.smartnotify.parcel.model.Parcel;
+import com.smartnotify.parcel.repository.ParcelRepository;
+import com.smartnotify.resident.model.VerticalCondoResident;
 import com.smartnotify.resident.repository.VerticalCondoResidentRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class DeleteVerticalCondoResident implements DeleteResident {
 
-    private final VerticalCondoResidentRepository repository;
+    private final ParcelRepository parcelRepository;
+    private final VerticalCondoResidentRepository residentRepository;
 
     @Transactional
-    public void execute(final String email, String condominiumId) {
-        final var resident = repository.findByEmail(email)
-                .orElseThrow(() -> new ResidentNotFoundException("Resident not found"));
+    public void execute(final String email, final String condominiumId) {
+        final VerticalCondoResident resident = findResident(email);
+        final String residenceDetails = buildResidenceDetails(resident);
 
-        final var hasNotDeliveredParcels = resident.getParcels().stream()
-                .anyMatch(parcel -> parcel.getStatus() == DeliveryStatus.NOT_DELIVERED);
+        final Long amountOfResidents =
+                getAmountOfResidents(resident.getApartmentNumber(), resident.getBlock(), condominiumId);
 
-        if (hasNotDeliveredParcels) {
+        final boolean hasNotDeliveredParcels = hasNotDeliveredParcels(residenceDetails, condominiumId);
+
+        if (amountOfResidents == 1 && hasNotDeliveredParcels) {
             throw new IllegalStateException("Error deleting resident " + resident.getName() +
-                    " because of pending parcels. Make sure to deliver all the parcels before deleting the resident.");
+                    " because there is only one resident registered in the residence and there are pending parcels." +
+                    " Make sure to deliver all the parcels before deleting the resident.");
         }
-        repository.deleteByEmailAndCondominiumId(resident.getEmail(), condominiumId);
+        residentRepository.deleteByEmailAndCondominiumId(email, condominiumId);
     }
 
     @Override
     public CondominiumType getCondominiumType() {
         return CondominiumType.VERTICAL;
+    }
+
+    private boolean hasNotDeliveredParcels(final String residenceDetails, final String condominiumId) {
+        final List<Parcel> parcels = parcelRepository
+                .findAllByResidenceDetailsAndCondominiumId(residenceDetails, condominiumId);
+
+        return parcels.stream()
+                .anyMatch(parcel -> parcel.getStatus() == DeliveryStatus.NOT_DELIVERED);
+    }
+
+    private Long getAmountOfResidents(final String apartmentNumber, final String block, final String condominiumId) {
+        return residentRepository
+                .countByApartmentNumberAndBlockAndCondominiumId(apartmentNumber, block, condominiumId);
+    }
+
+    private VerticalCondoResident findResident(final String email) {
+        return (VerticalCondoResident) residentRepository.findByEmail(email)
+                .orElseThrow(() -> new ResidentNotFoundException("Resident not found"));
+    }
+
+    private String buildResidenceDetails(final VerticalCondoResident resident) {
+        return resident.getBlock() == null ?
+                resident.getApartmentNumber() :
+                resident.getApartmentNumber() + " " + resident.getBlock();
     }
 
 }
