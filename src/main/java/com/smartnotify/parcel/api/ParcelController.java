@@ -6,7 +6,6 @@ import com.smartnotify.parcel.api.json.ParcelResponse;
 import com.smartnotify.parcel.model.DeliveryStatus;
 import com.smartnotify.parcel.service.ParcelService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -29,10 +27,9 @@ public class ParcelController {
     private final ParcelService parcelService;
 
     @GetMapping
-    public ResponseEntity<List<ParcelResponse>> getParcelsByStatus(
-            @Valid @NotNull @RequestParam("status") final DeliveryStatus status) {
+    public ResponseEntity<List<ParcelResponse>> getNotDeliveredParcels() {
 
-        final var parcels = parcelService.getParcelsByStatus(status);
+        final var parcels = parcelService.getParcelsByStatus(DeliveryStatus.NOT_DELIVERED);
 
         final var parcelsResponse = parcels.stream()
                 .map(ParcelResponse::convertToParcelResponse)
