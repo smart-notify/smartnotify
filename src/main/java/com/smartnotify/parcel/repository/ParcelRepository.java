@@ -16,6 +16,8 @@ public interface ParcelRepository extends JpaRepository<Parcel, String> {
 
     List<Parcel> findAllByStatusAndCondominiumId(DeliveryStatus status, String condominiumId);
 
+    List<Parcel> findAllByResidenceDetailsAndCondominiumId(String residenceDetails, String condominiumId);
+
     @Modifying
     @Query(
             value = """

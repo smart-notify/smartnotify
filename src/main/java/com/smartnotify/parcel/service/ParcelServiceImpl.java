@@ -39,14 +39,18 @@ public class ParcelServiceImpl implements ParcelService {
     @Transactional
     public void sendParcelNotification(final String labelContent) {
         final var residenceDetails = labelService.matchResidencePatternAndNormalize(labelContent);
-        final var resident = getResidentByResidenceDetails(residenceDetails);
+        final List<Resident> residents = getResidentsByResidenceDetails(residenceDetails);
 
         try {
-            final var parcel = parcelRepository.save(buildParcel(resident));
+            final var parcel = parcelRepository.save(buildParcel(residenceDetails));
             notificationRepository.save(buildNotification(parcel));
-            mailService.sendEmail(resident, parcel.getRegistrationCode(), parcel.getDeliveryCode());
+
+            residents.forEach(resident ->
+                    mailService.sendEmail(resident, parcel.getRegistrationCode(), parcel.getDeliveryCode())
+            );
+
         } catch (RuntimeException e) {
-            throw new SendParcelNotificationException("Error sending parcel notification. " + e.toString());
+            throw new SendParcelNotificationException("Error sending parcel notification. " + e);
         }
     }
 
@@ -61,12 +65,12 @@ public class ParcelServiceImpl implements ParcelService {
         }
     }
 
-    private Resident getResidentByResidenceDetails(final String residenceDetails) {
+    private List<Resident> getResidentsByResidenceDetails(final String residenceDetails) {
         final var condominium = Condominium.getAuthenticatedCondominium();
 
         return residentServiceFactory
                 .findStrategy(condominium.getType())
-                .findResidentByResidenceDetails(residenceDetails, condominium.getId());
+                .findResidentsByResidenceDetails(residenceDetails, condominium.getId());
     }
 
     private static Notification buildNotification(final Parcel parcel) {
@@ -75,12 +79,12 @@ public class ParcelServiceImpl implements ParcelService {
                 .build();
     }
 
-    private Parcel buildParcel(Resident resident) {
+    private Parcel buildParcel(final String residenceDetails) {
         return Parcel.builder()
                 .status(DeliveryStatus.NOT_DELIVERED)
                 .deliveryCode(generateFourDigitRandomNumber())
                 .registrationCode(generateFourDigitRandomNumber())
-                .resident(resident)
+                .residenceDetails(residenceDetails)
                 .condominium(Condominium.getAuthenticatedCondominium())
                 .build();
     }

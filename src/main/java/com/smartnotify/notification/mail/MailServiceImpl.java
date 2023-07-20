@@ -26,7 +26,7 @@ public class MailServiceImpl implements MailService {
                 .append(resident.getName())
                 .append("!")
                 .append("\n\n")
-                .append("Sua encomenda chegou!")
+                .append("Chegou uma encomenda para sua residência!")
                 .append("\n\n")
                 .append("> Código de identificação: ")
                 .append(registrationCode)
@@ -34,13 +34,13 @@ public class MailServiceImpl implements MailService {
                 .append("> Código de retirada: ")
                 .append(deliveryCode)
                 .append("\n\n")
-                .append("Para garantir a segurança e integridade de sua entrega, ")
-                .append("é necessário informar os dois códigos listados acima no momento da retirada de sua encomenda.")
+                .append("Para garantir a segurança e integridade da entrega, ")
+                .append("é necessário informar os dois códigos listados acima no momento da retirada da encomenda.")
                 .append("\n\n")
                 .append(condominium.getName())
                 .append(" - Smartnotify group");
 
-        mail.setSubject("Smartnotify - Sua encomenda chegou!");
+        mail.setSubject("Smartnotify - Chegou uma encomenda!");
         mail.setText(message.toString());
 
         javaMailSender.send(mail);

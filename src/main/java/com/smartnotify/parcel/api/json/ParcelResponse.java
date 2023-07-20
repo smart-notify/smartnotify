@@ -9,15 +9,13 @@ import lombok.Getter;
 public class ParcelResponse {
 
     private String id;
-    private String residentName;
-    private String residentEmail;
+    private String residenceDetails;
     private String registrationCode;
 
     public static ParcelResponse convertToParcelResponse(final Parcel parcel) {
         return ParcelResponse.builder()
                 .id(parcel.getId())
-                .residentName(parcel.getResident().getName())
-                .residentEmail(parcel.getResident().getEmail())
+                .residenceDetails(parcel.getResidenceDetails())
                 .registrationCode(parcel.getRegistrationCode())
                 .build();
     }
