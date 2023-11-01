@@ -14,10 +14,11 @@ public class RegisterHorizontalCondoResident {
     private final HorizontalCondoResidentRepository repository;
 
     @Transactional
-    public void execute(final HorizontalCondoResident resident) {
-        repository.findByEmail(resident.getEmail()).ifPresent(retrievedResident -> {
-            throw new ResidentAlreadyExistsException("Email already taken.");
-        });
+    public void execute(final HorizontalCondoResident resident, final String condominiumId) {
+        repository.findByEmailAndCondominiumId(resident.getEmail(), condominiumId)
+                .ifPresent(retrievedResident -> {
+                    throw new ResidentAlreadyExistsException("Email already taken.");
+                });
 
         repository.save(resident);
     }

@@ -22,7 +22,7 @@ public class DeleteVerticalCondoResident implements DeleteResident {
 
     @Transactional
     public void execute(final String email, final String condominiumId) {
-        final VerticalCondoResident resident = findResident(email);
+        final VerticalCondoResident resident = findResident(email, condominiumId);
         final String residenceDetails = buildResidenceDetails(resident);
 
         final Long amountOfResidents =
@@ -56,8 +56,8 @@ public class DeleteVerticalCondoResident implements DeleteResident {
                 .countByApartmentNumberAndBlockAndCondominiumId(apartmentNumber, block, condominiumId);
     }
 
-    private VerticalCondoResident findResident(final String email) {
-        return (VerticalCondoResident) residentRepository.findByEmail(email)
+    private VerticalCondoResident findResident(final String email, final String condominiumId) {
+        return (VerticalCondoResident) residentRepository.findByEmailAndCondominiumId(email, condominiumId)
                 .orElseThrow(() -> new ResidentNotFoundException("Resident not found"));
     }
 

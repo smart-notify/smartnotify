@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface ResidentBaseRepository<T extends Resident> extends Repository<T, String> {
-    Optional<Resident> findByEmail(String email);
+    Optional<Resident> findByEmailAndCondominiumId(String email, String condominiumId);
 
     void deleteByEmailAndCondominiumId(String email, String condominiumId);
 

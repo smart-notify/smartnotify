@@ -22,7 +22,7 @@ public class DeleteHorizontalCondoResident implements DeleteResident {
 
     @Transactional
     public void execute(final String email, final String condominiumId) {
-        final HorizontalCondoResident resident = findResident(email);
+        final HorizontalCondoResident resident = findResident(email, condominiumId);
 
         final Long amountOfResidents =
                 getAmountOfResidents(resident.getHouseNumber(), condominiumId);
@@ -45,8 +45,8 @@ public class DeleteHorizontalCondoResident implements DeleteResident {
                 .anyMatch(parcel -> parcel.getStatus() == DeliveryStatus.NOT_DELIVERED);
     }
 
-    private HorizontalCondoResident findResident(final String email) {
-        return (HorizontalCondoResident) residentRepository.findByEmail(email)
+    private HorizontalCondoResident findResident(final String email, final String condominiumId) {
+        return (HorizontalCondoResident) residentRepository.findByEmailAndCondominiumId(email, condominiumId)
                 .orElseThrow(() -> new ResidentNotFoundException("Resident not found"));
     }
 

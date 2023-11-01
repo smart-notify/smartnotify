@@ -36,7 +36,7 @@ public class ResidentController {
             @RequestBody @Valid final RegisterVerticalCondoResidentRequest request) {
 
         final var resident = verticalCondoResidentService.buildVerticalCondoResident(request);
-        registerVerticalCondoResident.execute(resident);
+        registerVerticalCondoResident.execute(resident, Condominium.getAuthenticatedCondominium().getId());
         return ResponseEntity.ok().build();
     }
 
@@ -45,7 +45,7 @@ public class ResidentController {
             @RequestBody @Valid final RegisterHorizontalCondoResidentRequest request) {
 
         final var resident = horizontalCondoResidentService.buildHorizontalCondoResident(request);
-        registerHorizontalCondoResident.execute(resident);
+        registerHorizontalCondoResident.execute(resident, Condominium.getAuthenticatedCondominium().getId());
         return ResponseEntity.ok().build();
     }
 
