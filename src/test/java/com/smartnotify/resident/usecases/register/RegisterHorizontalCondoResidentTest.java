@@ -36,20 +36,26 @@ class RegisterHorizontalCondoResidentTest {
 
     @Test
     void testRegisterResident() {
-        when(repository.findByEmail(resident.getEmail())).thenReturn(Optional.empty());
+        final var condominiumId = "condominiumId";
 
-        registerResident.execute(resident);
+        when(repository.findByEmailAndCondominiumId(resident.getEmail(), condominiumId))
+                .thenReturn(Optional.empty());
 
-        verify(repository).findByEmail("email@email.com");
+        registerResident.execute(resident, condominiumId);
+
+        verify(repository).findByEmailAndCondominiumId(resident.getEmail(), condominiumId);
         verify(repository).save(resident);
     }
 
     @Test
     void testRegisterResidentThatAlreadyExists() {
-        when(repository.findByEmail(resident.getEmail())).thenReturn(Optional.of(resident));
+        final var condominiumId = "condominiumId";
+
+        when(repository.findByEmailAndCondominiumId(resident.getEmail(), condominiumId))
+                .thenReturn(Optional.of(resident));
 
         final var exception = assertThrows(ResidentAlreadyExistsException.class,
-                () -> registerResident.execute(resident));
+                () -> registerResident.execute(resident, condominiumId));
         assertEquals("Email already taken.", exception.getMessage());
     }
 

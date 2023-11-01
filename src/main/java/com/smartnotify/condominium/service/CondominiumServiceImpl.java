@@ -25,7 +25,7 @@ public class CondominiumServiceImpl implements UserDetailsService, CondominiumSe
 
     @Override
     public void signUpCondominium(final Condominium condominium) {
-        condominiumRepository.findByEmail(condominium.getEmail()).ifPresent(retrievedReception -> {
+        condominiumRepository.findByEmail(condominium.getEmail()).ifPresent(retrievedCondominium -> {
             throw new CondominiumAlreadyExistsException("Email already taken.");
         });
         condominium.setPassword(passwordEncoder.encode(condominium.getPassword()));
