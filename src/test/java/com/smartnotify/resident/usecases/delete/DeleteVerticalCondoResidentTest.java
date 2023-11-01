@@ -63,11 +63,13 @@ class DeleteVerticalCondoResidentTest {
                 .findAllByResidenceDetailsAndCondominiumId("APTO 22 BLOCO 1", "condominiumId"))
                 .thenReturn(parcels);
 
-        when(residentRepository.findByEmail(resident.getEmail())).thenReturn(Optional.of(resident));
+        when(residentRepository.findByEmailAndCondominiumId(resident.getEmail(), "condominiumId"))
+                .thenReturn(Optional.of(resident));
 
         deleteResident.execute(resident.getEmail(), resident.getCondominium().getId());
 
-        verify(residentRepository, times(1)).findByEmail(resident.getEmail());
+        verify(residentRepository, times(1))
+                .findByEmailAndCondominiumId(resident.getEmail(), "condominiumId");
 
         verify(parcelRepository, times(1))
                 .findAllByResidenceDetailsAndCondominiumId("APTO 22 BLOCO 1", "condominiumId");
@@ -84,7 +86,8 @@ class DeleteVerticalCondoResidentTest {
 
     @Test
     void testDeleteNotFoundResident() {
-        when(residentRepository.findByEmail(resident.getEmail())).thenReturn(Optional.empty());
+        when(residentRepository.findByEmailAndCondominiumId(resident.getEmail(), "condominiumId"))
+                .thenReturn(Optional.empty());
 
         final var exception = assertThrows(ResidentNotFoundException.class,
                 () -> deleteResident.execute(resident.getEmail(), resident.getCondominium().getId()));

@@ -40,6 +40,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -111,6 +112,15 @@ class ResidentControllerTest {
 
         String requestBody = new ObjectMapper().writeValueAsString(request);
 
+        final var principal = Condominium.builder()
+                .id("id")
+                .type(CondominiumType.VERTICAL)
+                .build();
+
+        when(authentication.getPrincipal()).thenReturn(principal);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
         when(verticalCondoResidentService.buildVerticalCondoResident(any()))
                 .thenReturn(VerticalCondoResident.builder()
                         .apartmentNumber(request.getApartmentNumber())
@@ -124,7 +134,7 @@ class ResidentControllerTest {
                 .andExpect(status().isOk());
 
         verify(registerVerticalCondoResident, times(1))
-                .execute(verticalCondoResidentCaptor.capture());
+                .execute(verticalCondoResidentCaptor.capture(), eq(principal.getId()));
         VerticalCondoResident capturedResident = verticalCondoResidentCaptor.getValue();
 
         assertEquals(request.getApartmentNumber(), capturedResident.getApartmentNumber());
@@ -141,6 +151,15 @@ class ResidentControllerTest {
 
         String requestBody = new ObjectMapper().writeValueAsString(request);
 
+        final var principal = Condominium.builder()
+                .id("id")
+                .type(CondominiumType.VERTICAL)
+                .build();
+
+        when(authentication.getPrincipal()).thenReturn(principal);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
         when(verticalCondoResidentService.buildVerticalCondoResident(any()))
                 .thenReturn(VerticalCondoResident.builder()
                         .apartmentNumber(request.getApartmentNumber())
@@ -153,7 +172,7 @@ class ResidentControllerTest {
                 .andExpect(status().isOk());
 
         verify(registerVerticalCondoResident, times(1))
-                .execute(verticalCondoResidentCaptor.capture());
+                .execute(verticalCondoResidentCaptor.capture(), eq(principal.getId()));
         VerticalCondoResident capturedResident = verticalCondoResidentCaptor.getValue();
 
         assertEquals(request.getApartmentNumber(), capturedResident.getApartmentNumber());
@@ -170,6 +189,15 @@ class ResidentControllerTest {
 
         String requestBody = new ObjectMapper().writeValueAsString(request);
 
+        final var principal = Condominium.builder()
+                .id("id")
+                .type(CondominiumType.VERTICAL)
+                .build();
+
+        when(authentication.getPrincipal()).thenReturn(principal);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
         when(horizontalCondoResidentService.buildHorizontalCondoResident(any()))
                 .thenReturn(HorizontalCondoResident.builder()
                         .houseNumber("CASA 1")
@@ -182,7 +210,7 @@ class ResidentControllerTest {
                 .andExpect(status().isOk());
 
         verify(registerHorizontalCondoResident, times(1))
-                .execute(horizontalCondoResidentCaptor.capture());
+                .execute(horizontalCondoResidentCaptor.capture(), eq(principal.getId()));
         HorizontalCondoResident capturedResident = horizontalCondoResidentCaptor.getValue();
 
         assertEquals(request.getHouseNumber(), capturedResident.getHouseNumber());
@@ -197,6 +225,7 @@ class ResidentControllerTest {
         String requestBody = new ObjectMapper().writeValueAsString(request);
 
         final var principal = Condominium.builder()
+                .id("id")
                 .type(CondominiumType.VERTICAL)
                 .build();
 
@@ -204,7 +233,7 @@ class ResidentControllerTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        when(verticalCondoResidentRepository.findByEmail(request.getEmail()))
+        when(verticalCondoResidentRepository.findByEmailAndCondominiumId(request.getEmail(), principal.getId()))
                 .thenReturn(Optional.of(VerticalCondoResident.builder().build()));
 
         when(deleteResidentFactory.findStrategy(CondominiumType.VERTICAL))
@@ -228,6 +257,7 @@ class ResidentControllerTest {
         String requestBody = new ObjectMapper().writeValueAsString(request);
 
         final var principal = Condominium.builder()
+                .id("id")
                 .type(CondominiumType.HORIZONTAL)
                 .build();
 
@@ -235,7 +265,7 @@ class ResidentControllerTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        when(horizontalCondoResidentRepository.findByEmail(request.getEmail()))
+        when(horizontalCondoResidentRepository.findByEmailAndCondominiumId(request.getEmail(), principal.getId()))
                 .thenReturn(Optional.of(HorizontalCondoResident.builder().build()));
 
         when(deleteResidentFactory.findStrategy(CondominiumType.HORIZONTAL))
