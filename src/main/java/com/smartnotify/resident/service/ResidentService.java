@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ResidentService {
 
-    List<Resident> findResidentsByResidenceDetails(String residenceDetails, String receptionId);
+    List<Resident> findResidentsByResidenceDetails(String residenceDetails, String condominiumId);
 
     CondominiumType getCondominiumType();
 
